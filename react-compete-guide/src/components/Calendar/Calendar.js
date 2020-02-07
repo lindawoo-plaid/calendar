@@ -51,6 +51,20 @@ export default class Calendar extends React.Component{
             dateContext:dateContext
         })
     }
+
+    nextMonth = ()=>{
+        let dateContext = {...this.state.dateContext}
+        dateContext = moment(dateContext).add(1,"month");
+        this.setState({dateContext:dateContext});
+        this.props.onNextMonth && this.props.onNextMonth()
+    }
+
+    prevMonth = ()=>{
+        let dateContext = {...this.state.dateContext}
+        dateContext = moment(dateContext).subtract(1,"month");
+        this.setState({dateContext:dateContext});
+        this.props.onPrevMonth && this.props.onPrevMonth()
+    }
     onSelectChange =(e,data)=>{
         this.setMonth(data);
         this.props.onMonthChange &&this.props.onMonthChange();
@@ -83,6 +97,10 @@ export default class Calendar extends React.Component{
         })
     }
 
+    onChangeYear = (e,year)=>{
+        
+    }
+
     MonthNav = ()=>{
         return(
             <span className = "label-month" onClick = {(e)=>{this.onChangeMonth(e,this.month())}}>
@@ -93,15 +111,54 @@ export default class Calendar extends React.Component{
             </span>
         );
     }
+    showYearEditor = ()=>{
+        this.setState({showYearNav:true})
+    }
+
+    setYear = (year)=>{
+        let dateContext = {...this.state.dateContext}
+        dateContext = moment(dateContext).set("year",year);
+        this.setState({dateContext:dateContext})
+    }
+
+    onKeyUpYear = (e)=>{
+        if(e.which===13||e.which===27){
+            this.setYear(e.target.value);
+            this.setState({
+                showYearNav:false
+            })
+        }
+
+    }
+
+    onYearChange = (e)=>{
+        this.setYear(e.target.value);
+        this.props.onYearChange &&this.props.onYearChange(e,e.target.value)
+
+    }
 
     YearNav = ()=>{
         return(
-            <span className = "label-label-year" onClick = {(e)=>{this.onChangeYear(e,this.year())}}>
+            this.state.showYearNav?
+            <input defaultValue = {this.year()}
+            classNAme = "editor-year"
+            ref = {(yearInput)=>{this.yearInput = yearInput}}
+            onKeyUp = {(e)=>this.onKeyUpYear(e)}
+            onChange = {(e)=>this.onYearChange(e)}
+            type = "number"
+            placeholder ="year"/>:
+           
+            <span 
+            className = "label-label-year" 
+            onDoubleClick = {(e)=>{this.showYearEditor()}}
+            onClick = {(e)=>{this.onChangeYear(e,this.year())}}>
                 {this.year()}
             </span>
         );
     }
-
+    onDayClick = (e,day)=>{
+        this.props.onDayClick&&this.props.onDayClick(e,day)
+    }
     render(){
         console.log(this.months)
         console.log(moment().set("date",22));
@@ -120,7 +177,7 @@ export default class Calendar extends React.Component{
           let className = (d===this.currentDay()? "day current-day": "day");
           daysInMonth.push(
               <td className = {className}>
-                  <span>{d}</span>
+                  <span onClick = {(e)=>this.onDayClick(e,d)}>{d}</span>
               </td>
           )
       }
@@ -155,7 +212,13 @@ export default class Calendar extends React.Component{
                         <tr className = "calendar-header">
                             <td colSpan="5">
                                 <this.MonthNav/>
+                                {" "}
                                 <this.YearNav/>
+                            </td>
+                            <td colSpan = "2" className = "nav-month">
+                                <span className = "monthArrows" onClick = {(e)=>{this.prevMonth()}}> prev </span>
+                                <span className = "monthArrows" onClick = {(e)=>{this.nextMonth()}}> next </span>
+
                             </td>
 
                         </tr>

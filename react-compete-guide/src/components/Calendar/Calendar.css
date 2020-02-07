@@ -5,9 +5,14 @@
 
 .label-month{
     position:absolute;
-    left:0%;
+    left:5%;
 }
 
 .label-month:hover{
    cursor: pointer;
+}
+
+.monthArrows{
+    padding-left: 10px;
+    cursor:pointer;
 }

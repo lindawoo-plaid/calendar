@@ -5,13 +5,17 @@ import Calendar from './components/Calendar/Calendar'
 const style = {
     position:'relative',
     margin:'50px auto',
-    color:'white',
+    color:'black',
     border:"1px green solid",
     padding: "10px",
     backgroundColor:"pink"
 }
 
 class App2 extends Component {
+  onDayClick = (e,day)=>{
+    alert(day);
+  }
+  
   state = {
    
   }
@@ -21,7 +25,8 @@ class App2 extends Component {
 
     return (
       <div className="App">
-        <Calendar style = {style} width = "500px" height = "350px"/>
+        <Calendar 
+        onDayClick = {(e, day) => this.onDayClick(e,day)} style = {style} width = "500px" height = "350px"/>
       </div>
     );
   }
