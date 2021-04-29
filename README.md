@@ -1,2 +1,2 @@
 # calendar
-building a test calendar in React
+building a test calendar in React.
